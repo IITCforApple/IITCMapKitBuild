@@ -41,6 +41,8 @@ iOS 构建和 TestFlight 不在此流程中；Apple 公证针对 macOS 分发。
 
 ## 更新固定源码
 
+完整的版本交付必须遵守 [AGENTS.md](AGENTS.md)：先完成私有源码仓库的验证、安装、版本提交以及 `main` 和版本 tag 推送，再把本仓库 `iitc_mapkit` 子模块固定到源码远端 `main` 的同一提交。提交并推送本仓库 `main`，最后在本仓库创建相同的 `vMAJOR.MINOR.PATCH` tag 并推送 tags。核对远端 gitlink、tag 与源码 `VERSION`，确认 tag 发布流程已触发；仅推送源码仓库 tag 不算完成交付。
+
 ```sh
 git submodule update --init
 git -C iitc_mapkit fetch origin
