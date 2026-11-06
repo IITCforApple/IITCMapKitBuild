@@ -1,0 +1,72 @@
+name: Private source build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: build-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  macos:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    environment: Build
+    steps:
+      - name: Check required settings
+        env:
+          IITCMAPKIT_READ_TOKEN: ${{ secrets.IITCMAPKIT_READ_TOKEN }}
+          ARTIFACT_PASSWORD: ${{ secrets.ARTIFACT_PASSWORD }}
+          MACOS_CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_APP_PASSWORD: ${{ secrets.NOTARY_APP_PASSWORD }}
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+          SIGNING_TEAM_ID: ${{ secrets.SIGNING_TEAM_ID }}
+        run: |
+          python3 - <<'PYTHON'
+          import os, sys
+          names = ('IITCMAPKIT_READ_TOKEN', 'ARTIFACT_PASSWORD',
+                   'MACOS_CERTIFICATE_P12_BASE64', 'MACOS_CERTIFICATE_PASSWORD',
+                   'NOTARY_APPLE_ID', 'NOTARY_APP_PASSWORD', 'SIGNING_IDENTITY', 'SIGNING_TEAM_ID')
+          missing = [name for name in names if not os.environ.get(name)]
+          for name in missing:
+              print('::error::Missing ' + name)
+          sys.exit(bool(missing))
+          PYTHON
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Checkout pinned private source
+        env:
+          GH_TOKEN: ${{ secrets.IITCMAPKIT_READ_TOKEN }}
+        run: python3 scripts/checkout.py
+      - name: Build tools
+        run: |
+          test "$(uname -m)" = arm64
+          brew install sevenzip ripgrep
+      - name: Build, sign, notarize and verify
+        env:
+          MACOS_CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_APP_PASSWORD: ${{ secrets.NOTARY_APP_PASSWORD }}
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+          SIGNING_TEAM_ID: ${{ secrets.SIGNING_TEAM_ID }}
+        run: python3 scripts/build.py
+      - name: Encrypt packages and diagnostic logs
+        id: encrypt
+        if: ${{ !cancelled() }}
+        env:
+          ARTIFACT_PASSWORD: ${{ secrets.ARTIFACT_PASSWORD }}
+        run: python3 scripts/encrypt-artifacts.py --platform macos-arm64
+      - name: Upload encrypted archive only
+        if: ${{ !cancelled() && steps.encrypt.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: IITCMapKit-macos-arm64-encrypted
+          path: dist-encrypted/*.7z
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
