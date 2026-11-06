@@ -22,8 +22,8 @@ jobs:
           MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
           NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
           NOTARY_APP_PASSWORD: ${{ secrets.NOTARY_APP_PASSWORD }}
-          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
-          SIGNING_TEAM_ID: ${{ secrets.SIGNING_TEAM_ID }}
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY || vars.SIGNING_IDENTITY }}
+          SIGNING_TEAM_ID: ${{ secrets.SIGNING_TEAM_ID || vars.SIGNING_TEAM_ID }}
         run: |
           python3 - <<'PYTHON'
           import os, sys
@@ -36,6 +36,7 @@ jobs:
           sys.exit(bool(missing))
           PYTHON
       - uses: actions/checkout@v7
+        id: checkout
         with:
           persist-credentials: false
       - name: Checkout pinned private source
@@ -52,12 +53,12 @@ jobs:
           MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
           NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
           NOTARY_APP_PASSWORD: ${{ secrets.NOTARY_APP_PASSWORD }}
-          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
-          SIGNING_TEAM_ID: ${{ secrets.SIGNING_TEAM_ID }}
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY || vars.SIGNING_IDENTITY }}
+          SIGNING_TEAM_ID: ${{ secrets.SIGNING_TEAM_ID || vars.SIGNING_TEAM_ID }}
         run: python3 scripts/build.py
       - name: Encrypt packages and diagnostic logs
         id: encrypt
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.checkout.outcome == 'success' }}
         env:
           ARTIFACT_PASSWORD: ${{ secrets.ARTIFACT_PASSWORD }}
         run: python3 scripts/encrypt-artifacts.py --platform macos-arm64

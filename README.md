@@ -17,7 +17,7 @@
 | `SIGNING_IDENTITY` | 完整证书名称，如 `Developer ID Application: Your Name (TEAMID)` |
 | `SIGNING_TEAM_ID` | 对应 Developer Team ID |
 
-后六项可使用 InblessBuild 相同的配置值；本项目将签名 identity/team 也配置成 **Secrets**，不是 Variables。GitHub 已保存的 Secrets 无法读回，需要重新从原始凭据填入。不要将凭据提交到 Git 或贴到 Issue。
+后六项可使用 InblessBuild 相同的配置值；签名 identity/team 支持 **Secrets 或 Variables**（Secrets 优先）。GitHub 已保存的 Secrets 无法读回，需要重新从原始凭据填入。不要将凭据提交到 Git 或贴到 Issue。
 
 配置完成后，Actions → Private source build → Run workflow。推送 main 也自动触发。首次未配置 Secrets 时会明确失败，不生成未加密产物。
 
