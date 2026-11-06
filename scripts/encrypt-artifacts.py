@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Encrypt only verified installers, checksums and diagnostic logs with 7-Zip."""
+"""Encrypt diagnostic logs only with 7-Zip; packages are uploaded separately."""
 import argparse
 import os
 from pathlib import Path
@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def encrypt(platform):
     password = os.environ.get('ARTIFACT_PASSWORD', '')
     if not password:
-        print('::error::ARTIFACT_PASSWORD is required; no plaintext will be uploaded.')
+        print('::error::ARTIFACT_PASSWORD is required; no plaintext logs will be uploaded.')
         return 1
     sevenzip = shutil.which('7zz') or shutil.which('7z')
     if not sevenzip and os.name == 'nt':
@@ -25,21 +25,18 @@ def encrypt(platform):
         print('::error::7-Zip is not installed.')
         return 1
     logs = Path(os.environ.get('RUNNER_TEMP', ROOT / '.private-build')) / 'iitcmapkit-logs'
-    packages = ROOT / 'dist-artifacts'
-    if not logs.exists() and not packages.exists():
-        print('No build output to encrypt.')
+    if not logs.is_dir():
+        print('No diagnostic logs to encrypt.')
         return 0
     destination = ROOT / 'dist-encrypted'
     destination.mkdir(exist_ok=True)
-    output = destination / f'IITCMapKit-{platform}.7z'
+    output = destination / f'IITCMapKit-{platform}-logs.7z'
     # Never retain an archive from a previous attempt if the new encryption fails.
     output.unlink(missing_ok=True)
     with tempfile.TemporaryDirectory(prefix='iitcmapkit-encrypt-') as temporary:
         payload = Path(temporary)
         if logs.is_dir():
             shutil.copytree(logs, payload / 'logs')
-        if packages.is_dir():
-            shutil.copytree(packages, payload / 'packages')
         # AES-256 with encrypted headers; no shell expansion, password never logged.
         commands = [
             [sevenzip, 'a', '-t7z', '-mhe=on', '-mx=1', '-y', '-p' + password, str(output), '.'],

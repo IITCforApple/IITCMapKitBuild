@@ -105,7 +105,9 @@ def build():
                 shutil.copy2(path, PACKAGES / path.name)
                 checksum = hashlib.sha256(path.read_bytes()).hexdigest()
                 (PACKAGES / (path.name + '.sha256')).write_text(checksum + '  ' + path.name + '\n')
-            shutil.copy2(LOGS / 'revision.log', PACKAGES / 'source-revision.txt')
+            if os.environ.get('GITHUB_OUTPUT'):
+                with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+                    output.write(f'package_base={dmg.stem}\n')
         finally:
             # Do not leave imported private keys or notary credentials on the runner.
             subprocess.run(['security', 'list-keychains', '-d', 'user', '-s', *original], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
