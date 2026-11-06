@@ -35,7 +35,7 @@
 
 四个公开产物各只上传对应文件，不上传整个输出目录。只有构建、签名、公证及验证全部成功后才上传安装包和校验和；失败时仅尝试上传加密日志。安装包可公开下载，无需密码；日志内容继续保密。
 
-私有构建日志不打印到公开 Actions 页面；源码仓库地址、固定提交、构建阶段和工具安装信息仍可见。不配置 PR 触发、不缓存私有源码和编译产物、不自动发布 Release。签名私钥和公证凭据在临时 keychain 中使用并清理。仅使用 GitHub 托管 runner。
+私有构建日志不打印到公开 Actions 页面；源码仓库地址、固定提交、构建阶段和工具安装信息仍可见。不配置 PR 触发、不缓存私有源码和编译产物、仅推送版本 tag 时自动发布 Release。签名私钥和公证凭据在临时 keychain 中使用并清理。仅使用 GitHub 托管 runner。
 
 iOS 构建和 TestFlight 不在此流程中；Apple 公证针对 macOS 分发。本仓库完成配置不等于公证验收：需要首次 Actions 实际完成且产物通过检查。
 
@@ -49,6 +49,20 @@ git add iitc_mapkit
 git commit -m 'build: 更新 IITCMapKit 源码版本'
 git push
 ```
+
+## Tag 自动发布 Release
+
+在 **IITCMapKitBuild** 仓库推送 `vMAJOR.MINOR.PATCH`（例如 `v1.3.0`）会自动构建并发布对应 GitHub Release。tag 必须与固定源码的 `VERSION` 完全一致；不匹配则失败。源码仓库中的 tag 不会触发此入口。main 推送、手动运行仍只上传 Actions artifacts，不发布 Release。
+
+```sh
+# 确保 main 已包含所需源码 gitlink；版本号以该源码 VERSION 为准。
+git tag v1.3.0
+git push origin v1.3.0
+```
+
+`Build` 环境须允许 `main` 分支和 `v*` 标签。PR 触发仍未启用。构建任务保持只读 token；独立发布任务仅在 tag push 且整个构建任务成功时运行，使用 GitHub 自动提供的 token，无需新增 Secret。
+
+发布任务只下载四个公开文件，再验证文件集合与 SHA-256，创建草稿、上传并下载核对后才公开 Release。加密日志不会进入 Release。失败留下的草稿可通过重新运行恢复；已公开的 Release 不会被自动覆盖，重复发布会明确失败。
 
 ## 参考
 
