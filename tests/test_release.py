@@ -18,7 +18,7 @@ class ReleaseTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.assets = Path(self.temporary.name)
-        self.base = 'IITC-Native-1.3.0-macOS-arm64'
+        self.base = 'IITC-MapKit-1.3.0-macOS-arm64'
         for suffix in ('.zip', '.dmg'):
             package = self.assets / (self.base + suffix)
             package.write_bytes(b'fixture package ' + suffix.encode())

@@ -17,7 +17,7 @@ def version_for_tag(tag):
 
 
 def validate_assets(tag, directory):
-    base = f'IITC-Native-{version_for_tag(tag)}-macOS-arm64'
+    base = f'IITC-MapKit-{version_for_tag(tag)}-macOS-arm64'
     paths = [directory / (base + suffix) for suffix in ('.zip', '.zip.sha256', '.dmg', '.dmg.sha256')]
     if set(directory.iterdir()) != set(paths) or any(not p.is_file() or p.is_symlink() for p in paths):
         raise ValueError('Release must contain exactly ZIP, DMG and their two checksums')
@@ -49,7 +49,7 @@ def publish(tag, directory):
             notes.write_text('macOS arm64 application and disk image.\n\n'
                              'Developer ID signed, notarized, stapled and verified by Gatekeeper in CI.\n'
                              'SHA-256 files are provided for both packages. Encrypted diagnostic logs remain in Actions.\n')
-            gh('release', 'create', tag, '--verify-tag', '--draft', '--title', 'IITC Native ' + tag[1:], '--notes-file', str(notes))
+            gh('release', 'create', tag, '--verify-tag', '--draft', '--title', 'IITC MapKit ' + tag[1:], '--notes-file', str(notes))
     gh('release', 'upload', tag, *map(str, paths), '--clobber')
     assets = json.loads(gh('release', 'view', tag, '--json', 'assets'))['assets']
     if {a['name'] for a in assets} != {p.name for p in paths}:

@@ -54,7 +54,7 @@ jobs:
       - name: Build tools
         run: |
           test "$(uname -m)" = arm64
-          brew install sevenzip ripgrep
+          brew install sevenzip ripgrep python
       - name: Build, sign, notarize and verify
         id: build
         env:
@@ -131,7 +131,7 @@ jobs:
       - name: Download public packages only
         uses: actions/download-artifact@v8
         with:
-          pattern: IITC-Native-*-macOS-arm64.*
+          pattern: IITC-MapKit-*-macOS-arm64.*
           path: release-assets
           merge-multiple: true
       - name: Verify assets and publish release

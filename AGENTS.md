@@ -35,3 +35,9 @@ changes or unrelated workflow changes are implied by a tag push.
 
 Routine edits require focused commits; a new version/tag is only created when
 the user requests version finalization, a versioned package or a version tag.
+
+Use the source `Scripts/package-mac-dmg.command` for the IITC MapKit disk image.
+It owns the link-themed artwork, Retina background and Finder item layout. Do not
+recreate a plain DMG in this repository. The source installer migrates the former
+`~/Applications/IITC Native.app` to `~/Applications/IITC MapKit.app` while retaining
+bundle identities and saved-data paths.

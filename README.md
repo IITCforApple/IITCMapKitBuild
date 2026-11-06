@@ -28,10 +28,10 @@
 每次成功构建上传五个独立 Actions artifacts，均保留 7 天：
 
 - `IITCMapKit-macos-arm64-logs-encrypted`：仅包含 AES-256、加密文件名的 `IITCMapKit-macos-arm64-logs.7z`。解密后只有 `logs/`（包括源码提交记录），不包含 `packages/`。用 7-Zip 和 `ARTIFACT_PASSWORD` 解密。
-- `IITC-Native-<version>-macOS-arm64.zip`：不加密的应用 ZIP。
-- `IITC-Native-<version>-macOS-arm64.zip.sha256`：不加密的 ZIP 校验和。
-- `IITC-Native-<version>-macOS-arm64.dmg`：不加密的 DMG。
-- `IITC-Native-<version>-macOS-arm64.dmg.sha256`：不加密的 DMG 校验和。
+- `IITC-MapKit-<version>-macOS-arm64.zip`：不加密的应用 ZIP。
+- `IITC-MapKit-<version>-macOS-arm64.zip.sha256`：不加密的 ZIP 校验和。
+- `IITC-MapKit-<version>-macOS-arm64.dmg`：不加密的 DMG。
+- `IITC-MapKit-<version>-macOS-arm64.dmg.sha256`：不加密的 DMG 校验和。
 
 四个公开产物各只上传对应文件，不上传整个输出目录。只有构建、签名、公证及验证全部成功后才上传安装包和校验和；失败时仅尝试上传加密日志。安装包可公开下载，无需密码；日志内容继续保密。
 
@@ -70,3 +70,8 @@ git push origin v1.3.0
 
 - [Apple 公证流程](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution)
 - [GitHub runner 标签与工具链](https://github.com/actions/runner-images)
+
+The source `Scripts/package-mac-dmg.command` owns the IITC MapKit link-themed
+installer layout. This workflow uses it after app notarization, then signs,
+notarizes and staples the DMG as before. Display branding does not change the
+private source URL, bundle identifiers or signing/notarization boundaries.

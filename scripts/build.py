@@ -68,7 +68,7 @@ def build():
             env['IITC_SIGN_IDENTITY'] = identity
             run('build', ['zsh', 'Scripts/build.command'])
             run('package-check', ['zsh', 'Scripts/check-package.command'])
-            app = SOURCE / '.release/IITC Native.app'
+            app = SOURCE / '.release/IITC MapKit.app'
             submission = temporary / 'notary.zip'
             run('notary-zip', ['ditto', '-c', '-k', '--sequesterRsrc', '--keepParent', app, submission])
 
@@ -87,14 +87,9 @@ def build():
             run('gatekeeper-app', ['spctl', '--assess', '--type', 'execute', '--verbose=2', app])
             run('zip', ['zsh', 'Scripts/package-mac.command'])
             version = (SOURCE / 'VERSION').read_text().strip()
-            # Use our own staging notes: the source's local DMG script says "not notarized".
-            stage = temporary / 'Install'
-            stage.mkdir()
-            run('stage-dmg', ['ditto', app, stage / app.name])
-            (stage / 'Applications').symlink_to('/Applications')
-            (stage / 'Install.txt').write_text('IITC Native for macOS 26+, Apple Silicon.\nQuit the app and drag it to Applications (or replace your existing ~/Applications copy). Updating preserves application data.\nDeveloper ID signed; Apple notarization and ticket validation are required before publication.\n')
-            dmg = SOURCE / '.release' / f'IITC-Native-{version}-macOS-arm64.dmg'
-            run('dmg', ['hdiutil', 'create', '-volname', 'IITC Native ' + version, '-srcfolder', stage, '-format', 'UDZO', '-ov', dmg])
+            # Source owns the installer artwork and Finder layout for every build.
+            run('dmg', ['zsh', 'Scripts/package-mac-dmg.command'])
+            dmg = SOURCE / '.release' / f'IITC-MapKit-{version}-macOS-arm64.dmg'
             run('sign-dmg', ['codesign', '--force', '--sign', identity, '--timestamp', dmg])
             notarize(dmg, 'notarize-dmg')
             run('verify-dmg', ['hdiutil', 'verify', dmg])
