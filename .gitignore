@@ -3,3 +3,4 @@ dist-artifacts/
 dist-encrypted/
 __pycache__/
 .DS_Store
+var/
