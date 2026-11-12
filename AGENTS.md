@@ -7,7 +7,7 @@ This repository builds and publishes the private source repository
 When the user requests a versioned release or version-tag push:
 
 1. Complete and validate source changes. Build/package and install the macOS app
-   and the connected physical iPhone app as required by source instructions,
+   and update connected physical iPhones and iPads as required by source instructions,
    preserving application data. Never start a simulator as a substitute.
 2. Commit the source changes and release metadata on source `main`, create its
    unused matching `vMAJOR.MINOR.PATCH` tag, and push both to the source remote.
