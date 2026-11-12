@@ -1,6 +1,6 @@
 # Privacy Policy — IITC MapKit
 
-Effective date: 2026-11-11
+Effective date: 2026-11-12
 
 IITC MapKit is an independent native client for the Ingress Intel map. It is not
 an official Niantic or IITC release and is not affiliated with Niantic. This
@@ -13,11 +13,13 @@ require no account and no network access.
 
 ## Optional Niantic / Ingress sign-in
 
-Signing in is optional and only fetches live Intel data. Sign-in happens on
-Niantic's own web pages inside the app; the app never sees, collects or stores
-your password. The resulting web session (cookies) is kept locally on your
-device so you stay signed in. You can sign out at any time, which clears the
-session.
+Signing in is optional and enables live Intel data. Apple sign-in uses the
+official Ingress sign-in page inside the app. Google sign-in continues in Safari.
+When you start that flow, the Safari extension transfers the Intel session for
+`intel.ingress.com` to the app on the same device. It does not have access to the
+Google sign-in page or your Google cookies. The verified Intel session is kept
+locally so you stay signed in. **Disconnect** stops Intel access and automatic
+reconnection.
 
 ## Data stays on your device
 
