@@ -6,6 +6,10 @@ This repository builds and publishes the private source repository
 `git@github.com:IITCforApple/iitc_mapkit.git`. Follow the source repository's
 `AGENTS.md` for implementation, validation, installation and version metadata.
 
+Use the same user-facing version from `VERSION` for the macOS, iOS, and iPadOS
+apps. When finalizing a version, update and verify the app version metadata for
+all three platforms together.
+
 When the user requests a versioned release or version-tag push:
 
 1. Prepare and commit the source release metadata on source `main`. Push
