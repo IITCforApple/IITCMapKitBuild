@@ -8,7 +8,7 @@
 
 | Secret | 内容 |
 | --- | --- |
-| `IITCMAPKIT_READ_TOKEN` | 可以读取 `chewnglow/iitc_mapkit` 的 fine-grained PAT，Contents: read；需要该仓库所属账号授权 |
+| `IITCMAPKIT_READ_TOKEN` | Resource owner 选 `IITCforApple`，授权访问 `iitc_mapkit` 的 fine-grained PAT，Contents: read；若组织要求审批，需先取得批准 |
 | `ARTIFACT_PASSWORD` | 仅用于加密诊断日志的独立长密码 |
 | `MACOS_CERTIFICATE_P12_BASE64` | 包含私钥的 Developer ID Application `.p12` 文件的单行 Base64 |
 | `MACOS_CERTIFICATE_PASSWORD` | 上述 `.p12` 的导出密码 |
@@ -44,6 +44,7 @@ iOS 构建和 TestFlight 不在此流程中；Apple 公证针对 macOS 分发。
 完整的版本交付必须遵守 [AGENTS.md](AGENTS.md)：先完成私有源码仓库的验证、安装、版本提交以及 `main` 和版本 tag 推送，再把本仓库 `iitc_mapkit` 子模块固定到源码远端 `main` 的同一提交。提交并推送本仓库 `main`，最后在本仓库创建相同的 `vMAJOR.MINOR.PATCH` tag 并推送 tags。核对远端 gitlink、tag 与源码 `VERSION`，确认 tag 发布流程已触发；仅推送源码仓库 tag 不算完成交付。
 
 ```sh
+git submodule sync -- iitc_mapkit
 git submodule update --init
 git -C iitc_mapkit fetch origin
 git -C iitc_mapkit checkout <reviewed-commit>

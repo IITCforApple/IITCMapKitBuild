@@ -3,7 +3,7 @@
 Review release notes, announcements, tag annotations, commit messages and other public copy for confidential project names, service URLs, features and implementation details before publishing. Describe confidential changes with a neutral maintenance summary.
 
 This repository builds and publishes the private source repository
-`git@github.com:chewnglow/iitc_mapkit.git`. Follow the source repository's
+`git@github.com:IITCforApple/iitc_mapkit.git`. Follow the source repository's
 `AGENTS.md` for implementation, validation, installation and version metadata.
 
 When the user requests a versioned release or version-tag push:
@@ -15,8 +15,8 @@ When the user requests a versioned release or version-tag push:
    the exact source `main` commit just pushed. Preserve `.gitmodules` and
    private-source access.
 3. Commit the gitlink and any related delivery instructions on build `main`
-   and push that branch. Then create and push the matching version tag to start
-   the release workflow.
+   and push that branch to `git@github.com:IITCforApple/IITCMapKitBuild.git`.
+   Then create and push the matching version tag to start the release workflow.
 
 For a release push, skip duplicate local validation, release builds, packaging
 and installation. After Git accepts the build tag, finish without querying
