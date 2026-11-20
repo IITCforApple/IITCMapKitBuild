@@ -2,6 +2,10 @@
 
 For every feature, use the native technology stack, APIs, and UI controls best suited to the task on each target platform and OS version. When the best choice requires a newer OS, use an availability check and an appropriate native fallback on older supported versions.
 
+# Code readability and maintainability
+
+Apply the KISS principle before adding code. Check what the standard library and native platform APIs provide, then search the codebase for the shared feature, functions, and components that already handle the required behavior. If an existing implementation or a straightforward combination of components meets the requirement, use it directly. Add new logic only after identifying a specific gap, and implement only the missing behavior where it can be shared by the callers that need it.
+
 # Bug fixes
 
 Before changing code to fix a bug, state the failing case and the expected behavior. Starting from the symptom, ask what in the code caused it, then ask the same question about each cause until you reach the implementation decision that first violates the expected behavior. Explain how that decision leads to the observed failure, naming the relevant code and the evidence for each step.
