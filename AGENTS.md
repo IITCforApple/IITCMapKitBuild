@@ -4,7 +4,9 @@ For every feature, use the native technology stack, APIs, and UI controls best s
 
 # Bug fixes
 
-Start with the failing case and the expected behavior. Trace the failure to the first point where the implementation breaks that expectation. Fix the underlying cause in the component responsible for the behavior, then verify the original case and any other affected paths.
+Before changing code to fix a bug, state the failing case and the expected behavior. Starting from the symptom, ask what in the code caused it, then ask the same question about each cause until you reach the implementation decision that first violates the expected behavior. Explain how that decision leads to the observed failure, naming the relevant code and the evidence for each step.
+
+Apply the fix in the component responsible for that decision. Verify that the change corrects the diagnosed cause and restores the expected behavior in the original case and other affected paths.
 
 # Required release pipeline
 
