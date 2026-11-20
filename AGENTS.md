@@ -1,3 +1,7 @@
+# Native implementation choices
+
+For every feature, use the native technology stack, APIs, and UI controls best suited to the task on each target platform and OS version. When the best choice requires a newer OS, use an availability check and an appropriate native fallback on older supported versions.
+
 # Bug fixes
 
 Start with the failing case and the expected behavior. Trace the failure to the first point where the implementation breaks that expectation. Fix the underlying cause in the component responsible for the behavior, then verify the original case and any other affected paths.
