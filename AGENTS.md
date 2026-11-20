@@ -1,3 +1,7 @@
+# Bug fixes
+
+Start with the failing case and the expected behavior. Trace the failure to the first point where the implementation breaks that expectation. Fix the underlying cause in the component responsible for the behavior, then verify the original case and any other affected paths.
+
 # Required release pipeline
 
 Review release notes, announcements, tag annotations, commit messages and other public copy for confidential project names, service URLs, features and implementation details before publishing. Describe confidential changes with a neutral maintenance summary.
