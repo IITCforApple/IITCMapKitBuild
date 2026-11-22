@@ -45,10 +45,13 @@ def publish(tag, directory):
         raise RuntimeError('Unable to check existing release: ' + existing.stderr)
     else:
         with tempfile.TemporaryDirectory() as temporary:
+            release_notes = Path(__file__).resolve().parents[1] / 'release-notes' / (version_for_tag(tag) + '.md')
             notes = Path(temporary) / 'notes.md'
-            notes.write_text('macOS arm64 application and disk image.\n\n'
+            changes = release_notes.read_text(encoding='utf-8').rstrip() + '\n\n' if release_notes.is_file() else ''
+            notes.write_text(changes + 'macOS arm64 application and disk image.\n\n'
                              'Developer ID signed, notarized, stapled and verified by Gatekeeper in CI.\n'
-                             'SHA-256 files are provided for both packages. Encrypted diagnostic logs remain in Actions.\n')
+                             'SHA-256 files are provided for both packages. Encrypted diagnostic logs remain in Actions.\n',
+                             encoding='utf-8')
             gh('release', 'create', tag, '--verify-tag', '--draft', '--title', 'IITC MapKit ' + tag[1:], '--notes-file', str(notes))
     gh('release', 'upload', tag, *map(str, paths), '--clobber')
     assets = json.loads(gh('release', 'view', tag, '--json', 'assets'))['assets']
